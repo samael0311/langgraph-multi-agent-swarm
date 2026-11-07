@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  swarm-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langgraph-swarm-service
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - CRITIC_PASS_THRESHOLD=0.95
+      - SANDBOX_TIMEOUT_SEC=10
+      - SANDBOX_MAX_MEMORY_MB=512
+      - USE_DOCKER_SANDBOX=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
